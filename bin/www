@@ -35,7 +35,7 @@ console.info('Starting server...');
 
 run().catch((e) => {
   console.error('Error running the app: ', e);
-  shutdown();
+  return shutdown();
 });
 
 process.on('SIGTERM', shutdown);
