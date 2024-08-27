@@ -1,40 +1,47 @@
+const { Engine } = require('json-rules-engine');
 const Transaction = require('../models/transaction.model');
 const User = require('../models/user.model');
-const ruleEngine = require('../services/ruleEngine.service/rules');
+const rules = require('../services/ruleEngine.service/rules');
 
 exports.accruePoints = async (userId, points, source) => {
   const user = await User.findById(userId);
-  if (user) {
-    // Define the facts to be evaluated by the rule engine
-    const facts = {
-      userId: user._id,
-      points,
-      source,
-      userPoints: user.points,
-    };
-
-    // Evaluate the rules using the rule engine
-    const ruleResult = await ruleEngine.run(facts);
-
-    // If rule evaluation succeeds, proceed with accruing points
-    if (ruleResult.events.length > 0) {
-      user.points += points;
-      await user.save();
-
-      // Log the transaction
-      const transaction = new Transaction({
-        userId,
-        type: 'accrual',
-        points,
-        source,
-      });
-      await transaction.save();
-
-      return user;
-    } else {
-      throw new Error('Rule evaluation failed, points not accrued');
-    }
-  } else {
+  if (!user) {
     throw new Error('User not found');
   }
+
+  // Initialize the rule engine
+  const engine = new Engine();
+
+  // Load rules into the engine
+  rules.forEach((rule) => engine.addRule(rule));
+
+  // Define the facts (data) that the engine will evaluate
+  const facts = {
+    user,
+    points,
+    source,
+  };
+
+  // Run the engine
+  const { events } = await engine.run(facts);
+
+  // Check if any rule disallows the accrual of points
+  if (events.length === 0) {
+    throw new Error('Points accrual disallowed by rule engine');
+  }
+
+  // If allowed, update the user's points
+  user.points += points;
+  await user.save();
+
+  // Log the transaction
+  const transaction = new Transaction({
+    userId,
+    type: 'accrual',
+    points,
+    source,
+  });
+  await transaction.save();
+
+  return user;
 };

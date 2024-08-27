@@ -1,24 +1,48 @@
-const { Engine } = require('json-rules-engine');
-
-const engine = new Engine();
-
-// Example rule: Users can't accrue more than 1000 points in one transaction
-engine.addRule({
-  conditions: {
-    all: [
-      {
-        fact: 'points',
-        operator: 'lessThanInclusive',
-        value: 1000,
+module.exports = [
+  {
+    conditions: {
+      all: [
+        {
+          fact: 'source',
+          operator: 'equal',
+          value: 'purchase',
+        },
+        {
+          fact: 'user',
+          path: '$.status',
+          operator: 'equal',
+          value: 'active',
+        },
+      ],
+    },
+    event: {
+      type: 'allow-accrual',
+      params: {
+        message: 'Points accrual allowed',
       },
-    ],
-  },
-  event: {
-    type: 'accrual-approved',
-    params: {
-      message: 'Points can be accrued',
     },
   },
-});
-
-module.exports.run = (facts) => engine.run(facts);
+  {
+    conditions: {
+      any: [
+        {
+          fact: 'source',
+          operator: 'equal',
+          value: 'bonus',
+        },
+        {
+          fact: 'user',
+          path: '$.status',
+          operator: 'equal',
+          value: 'premium',
+        },
+      ],
+    },
+    event: {
+      type: 'allow-accrual',
+      params: {
+        message: 'Points accrual allowed for premium users or bonus',
+      },
+    },
+  },
+];
