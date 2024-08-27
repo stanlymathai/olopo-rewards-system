@@ -1,5 +1,6 @@
 const router = require('express').Router();
 
+const userRoute = require('./users.route');
 const pointsRoute = require('./points.route');
 const accrualRoute = require('./accrual.route');
 
@@ -9,6 +10,7 @@ function healthRoute(_, res) {
 
 router.get('/health', healthRoute);
 
+router.use('/users', userRoute);
 router.use('/points', pointsRoute);
 router.use('/accrual', accrualRoute);
 

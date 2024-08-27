@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const CreateUser = () => {
-  const [userData, setUserData] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
-  };
+const CreateUser = ({ onUserCreated }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/users', userData);
-      alert('User created successfully');
-    } catch (error) {
-      alert('Error creating user');
+      const response = await axios.post('http://localhost:8000/api/users/create', { name, email });
+      onUserCreated(response.data);
+      setName('');
+      setEmail('');
+      setError(null);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Error creating user');
     }
   };
 
@@ -27,22 +24,24 @@ const CreateUser = () => {
       <h2>Create User</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Name</label>
-          <input type="text" name="name" onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Email</label>
-          <input type="email" name="email" onChange={handleChange} required />
-        </div>
-        <div>
-          <label>Password</label>
+          <label>Name:</label>
           <input
-            type="password"
-            name="password"
-            onChange={handleChange}
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
           />
         </div>
+        <div>
+          <label>Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
         <button type="submit">Create User</button>
       </form>
     </div>

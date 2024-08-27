@@ -70,5 +70,6 @@ function onError(error) {
 
 function shutdown() {
   console.log('Gracefully shutting down');
+  if (!server) return;
   server.close(() => process.exit(0));
 }

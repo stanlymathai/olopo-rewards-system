@@ -1,19 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import UserRoutes from './routes/UserRoutes';
+import React, { useState } from 'react';
+import CreateUser from '../src/components/UserManagement/CreateUser';
+import ListUsers from '../src/components/UserManagement/ListUsers';
 
-function App() {
+const App = () => {
+  const [users, setUsers] = useState([]);
+
+  const handleUserCreated = (newUser) => {
+    setUsers([...users, newUser]);
+  };
+
   return (
-    <Router>
-      <Header />
-      <div className="container">
-        <UserRoutes />
-      </div>
-      <Footer />
-    </Router>
+    <div>
+      <h1>Olopo Rewards Management System</h1>
+      <CreateUser onUserCreated={handleUserCreated} />
+      <ListUsers />
+    </div>
   );
-}
+};
 
 export default App;
