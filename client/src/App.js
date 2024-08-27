@@ -1,15 +1,18 @@
 import React from 'react';
-import AccruePointsForm from './components/AccruePointsForm';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import UserRoutes from './routes/UserRoutes';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Olopo Rewards System</h1>
-        <AccruePointsForm />
-      </header>
-    </div>
+    <Router>
+      <Header />
+      <div className="container">
+        <UserRoutes />
+      </div>
+      <Footer />
+    </Router>
   );
 }
 

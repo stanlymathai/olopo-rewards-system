@@ -1,8 +1,6 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
+const handler = require('../controllers/accrual.controller');
 
-const { accruePoints } = require('../controllers/accrual.controller');
-
-router.post('/accrue', accruePoints);
+router.post('/', handler.accruePoints);
 
 module.exports = router;

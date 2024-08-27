@@ -11,7 +11,7 @@ const AccruePointsForm = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:8000/api/points/accrual', {
+      const response = await axios.post('http://localhost:8000/api/accrual', {
         userId,
         points: parseInt(points, 10),
         source,
