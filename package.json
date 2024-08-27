@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "./bin/www"
+    "start": "./bin/www",
+    "start:dev": "nodemon ./bin/www"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,8 @@
     "helmet": "^7.1.0",
     "json-rules-engine": "^6.5.0",
     "mongoose": "^8.5.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }
