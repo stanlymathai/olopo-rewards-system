@@ -1,10 +1,15 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const userRoutes = require('./routes/user.route');
+
+const appMiddlewares = require('./middlewares/app.middleware');
+const errorHandlers = require('./utils/errorHandler.util');
+const routes = require('./routes');
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use('/api/users', userRoutes);
+appMiddlewares(app);
+
+app.use('/api/', routes);
+
+errorHandlers(app);
 
 module.exports = app;
